@@ -4,6 +4,7 @@ let Promise = require('bluebird')
 let result = require('lodash.result')
 let merge = require('lodash.merge')
 let isEmpty = require('lodash.isempty')
+let each = require('lodash/foreach');
 
 /**
  * A function that can be used as a plugin for bookshelf
@@ -169,6 +170,32 @@ module.exports = (bookshelf, settings) => {
           }
 
           return Promise.all(events)
+        })
+        .then(() => {
+          if (this.dependents && !isEmpty(this.dependents)) {
+            let promises = []
+            each(this.dependents, dependent => {
+              let relation = this[dependent]()
+              let alsoSoftDelete = relation.relatedData.target.prototype.softDelete;
+              let relationType = relation.relatedData.type;
+              let destOps = {};
+              if (options.transacting) {
+                destOps = {transacting: options.transacting};
+              }
+              if (alsoSoftDelete === true && relationType !== 'belongsToMany') {
+                if (relation instanceof bookshelf.Model) {
+                  promises.push(relation.fetch().then(instance => {
+                    return instance.destroy(destOps)
+                  }))
+                } else {
+                  promises.push(relation.fetch().then(instances => {
+                    return instances.invokeThen('destroy', destOps);
+                  }))
+                }
+              }
+            })
+            return Promise.all(promises);
+          }
         })
         .then(() => this)
       } else {
