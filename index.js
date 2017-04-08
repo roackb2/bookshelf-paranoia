@@ -185,11 +185,15 @@ module.exports = (bookshelf, settings) => {
               if (alsoSoftDelete === true && relationType !== 'belongsToMany') {
                 if (relation instanceof bookshelf.Model) {
                   promises.push(relation.fetch().then(instance => {
-                    return instance.destroy(destOps)
+                    if (instance) {
+                      return instance.destroy(destOps)
+                    }
                   }))
                 } else {
                   promises.push(relation.fetch().then(instances => {
-                    return instances.invokeThen('destroy', destOps);
+                    if (instances) {
+                      return instances.invokeThen('destroy', destOps);
+                    }
                   }))
                 }
               }
