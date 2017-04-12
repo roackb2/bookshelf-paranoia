@@ -4,7 +4,7 @@ let Promise = require('bluebird')
 let result = require('lodash.result')
 let merge = require('lodash.merge')
 let isEmpty = require('lodash.isempty')
-let each = require('lodash/foreach');
+let each = require('lodash.foreach');
 
 /**
  * A function that can be used as a plugin for bookshelf

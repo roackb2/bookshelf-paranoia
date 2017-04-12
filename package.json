@@ -35,7 +35,8 @@
     "bluebird": "^3.4.7",
     "lodash.isempty": "^4.4.0",
     "lodash.merge": "^4.3.5",
-    "lodash.result": "^4.3.0"
+    "lodash.result": "^4.3.0",
+    "lodash.foreach": "^4.5.0"
   },
   "devDependencies": {
     "bookshelf": "^0.9.4",
